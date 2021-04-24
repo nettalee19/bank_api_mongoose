@@ -1,17 +1,36 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const app = express();
+const usersRoute = require('./routes/users.routes');
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+const cors = require('cors');
+
+app.use(cors());
+app.use('/bank/users',usersRoute);
+
+mongoose.connect('mongodb+srv://nettalee19:dM_HqsyqT9K8LK.@cluster0.u9jns.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+}).then(() => {
+    console.log("database connected")
+})
+
+app.get('/',(req,res)=>{
+    res.json({success : 'Bank API'})
+    
+})
+
+app.listen(process.env.PORT || 5000, () => {
+    console.log(`application start at ${process.env.PORT || 5000}`)
+})
+
+
+
+
